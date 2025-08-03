@@ -136,10 +136,13 @@ async def get_newsletter_subscribers():
             {"status": "active"}
         ).sort("subscribed_at", -1).to_list(1000)
         
+        # Convert to Pydantic models to ensure proper serialization
+        subscriber_models = [NewsletterSubscriber(**subscriber) for subscriber in subscribers]
+        
         return {
             "success": True,
-            "data": subscribers,
-            "count": len(subscribers)
+            "data": [subscriber.dict() for subscriber in subscriber_models],
+            "count": len(subscriber_models)
         }
     except Exception as e:
         logger.error(f"Error fetching newsletter subscribers: {str(e)}")
