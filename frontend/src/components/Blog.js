@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
 import { blogPosts } from '../data/mockData';
+import NewsletterSubscription from './NewsletterSubscription';
 
 const Blog = () => {
   const formatDate = (dateString) => {
