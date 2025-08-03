@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, ExternalLink } from 'lucide-react';
+import axios from 'axios';
+import { useToast } from '../hooks/use-toast';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +13,8 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleChange = (e) => {
     setFormData({
@@ -16,17 +23,38 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock form submission
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! I\'ll get back to you soon.');
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(`${API}/contact`, formData);
+      
+      if (response.data.success) {
+        toast({
+          title: "Message Sent!",
+          description: response.data.message,
+          variant: "default",
+        });
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -101,7 +129,8 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="John Doe"
                   />
                 </div>
@@ -116,7 +145,8 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -133,7 +163,8 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Project Collaboration"
                 />
               </div>
@@ -148,17 +179,19 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   rows={6}
-                  className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300 resize-vertical"
+                  className="w-full bg-[#302f2c] border border-[#3f4816] rounded-lg px-4 py-3 text-[#d9fb06] placeholder-[#888680] focus:outline-none focus:border-[#d9fb06] transition-colors duration-300 resize-vertical disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Tell me about your project..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="bg-[#d9fb06] text-[#1a1c1b] px-8 py-4 rounded-full font-semibold text-base uppercase tracking-wide hover:scale-105 hover:opacity-90 transition-all duration-300 flex items-center gap-3"
+                disabled={isSubmitting}
+                className="bg-[#d9fb06] text-[#1a1c1b] px-8 py-4 rounded-full font-semibold text-base uppercase tracking-wide hover:scale-105 hover:opacity-90 transition-all duration-300 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
                 <Send size={20} />
               </button>
             </form>
