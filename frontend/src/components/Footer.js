@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Linkedin, Twitter, Mail, ArrowUp, Heart, Code } from 'lucide-react';
+import NewsletterSubscription from './NewsletterSubscription';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
