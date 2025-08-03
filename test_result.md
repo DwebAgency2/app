@@ -101,3 +101,132 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the newly implemented backend API endpoints for the portfolio website including contact form API, newsletter subscription API, database integration, and error handling."
+
+backend:
+  - task: "Contact Form API - POST /api/contact endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Valid contact form submission working correctly. Returns proper response with message ID and success message. Validation errors handled correctly for missing/invalid fields."
+          
+  - task: "Contact Form API - GET /api/contact endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Contact messages retrieval working correctly. Returns list of contact messages with proper sorting by created_at."
+
+  - task: "Newsletter Subscription API - POST /api/newsletter/subscribe endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Newsletter subscription working correctly. Handles valid subscriptions and duplicate email prevention properly."
+
+  - task: "Newsletter Subscription API - GET /api/newsletter/subscribers endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ FAIL: Initial test failed with 500 error due to ObjectId serialization issue in MongoDB response."
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Fixed ObjectId serialization issue by converting MongoDB documents to Pydantic models before returning. Now returns proper JSON response with subscriber data."
+
+  - task: "Database Integration - MongoDB Contact Messages"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Contact messages are properly saved to MongoDB with correct fields and timestamps. Data persistence verified through submit-retrieve cycle."
+
+  - task: "Database Integration - MongoDB Newsletter Subscriptions"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Newsletter subscriptions are properly saved to MongoDB with correct fields and timestamps. Duplicate prevention working correctly."
+
+  - task: "Error Handling - Validation Errors"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: All validation errors handled correctly. Returns 422 status for invalid email formats, missing required fields, empty request bodies, and field length violations."
+
+  - task: "Error Handling - Database Connection Scenarios"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Database connection working properly. All endpoints successfully interact with MongoDB. Error handling in place for database failures."
+
+frontend:
+  # Frontend testing not performed as per testing agent instructions
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Contact Form API - POST /api/contact endpoint"
+    - "Contact Form API - GET /api/contact endpoint"
+    - "Newsletter Subscription API - POST /api/newsletter/subscribe endpoint"
+    - "Newsletter Subscription API - GET /api/newsletter/subscribers endpoint"
+    - "Database Integration - MongoDB Contact Messages"
+    - "Database Integration - MongoDB Newsletter Subscriptions"
+    - "Error Handling - Validation Errors"
+    - "Error Handling - Database Connection Scenarios"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "Completed comprehensive backend API testing for portfolio website. All 8 backend tasks tested successfully. Fixed one critical issue with ObjectId serialization in newsletter subscribers endpoint. All endpoints now working correctly with proper validation, error handling, and database integration. Created backend_test.py for automated testing. Overall test success rate: 100% (14/14 tests passed)."
