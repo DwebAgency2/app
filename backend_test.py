@@ -212,7 +212,10 @@ class BackendTester:
         """Test duplicate newsletter subscription handling"""
         print("\n🔍 Testing Newsletter - Duplicate Subscription...")
         
-        test_email = "duplicate.test@example.com"
+        # Use timestamp to ensure unique email for this test
+        import time
+        timestamp = str(int(time.time()))
+        test_email = f"duplicate.test.{timestamp}@example.com"
         test_data = {"email": test_email}
         
         try:
